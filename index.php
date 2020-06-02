@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * tostrander.greenriverdev.com/328/food3b
+ */
+
 //Turn on error reporting
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -11,10 +15,11 @@ require_once("model/data-layer.php");
 //Start a session AFTER requiring autoload.php
 session_start();
 
-//Instantiate the F3 Base class
+//Instantiate my classes
 $f3 = Base::instance();
 $validator = new Validate();
 $controller = new Controller($f3, $validator);
+$db = new Database();
 
 //Default route
 $f3->route('GET /', function() {
@@ -22,18 +27,23 @@ $f3->route('GET /', function() {
 });
 
 //Order route
-$f3->route('GET|POST /order', function($f3) {
+$f3->route('GET|POST /order', function() {
     $GLOBALS['controller']->order();
 });
 
-//Order 2 route
-$f3->route('GET|POST /order2', function($f3) {
+//Order2 route
+$f3->route('GET|POST /order2', function() {
     $GLOBALS['controller']->order2();
 });
 
-//summary route
+//Summary route
 $f3->route('GET /summary', function() {
     $GLOBALS['controller']->summary();
+});
+
+//Display route
+$f3->route('GET /display', function() {
+    $GLOBALS['controller']->display();
 });
 
 //Run F3

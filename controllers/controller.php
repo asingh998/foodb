@@ -84,11 +84,13 @@ class Controller
         //If the form has been submitted
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            //Add the data to the object in the session array
-            $_SESSION['order']->setCondiments($_POST['conds']);
+            if ($this->_validator->validCondiments($_POST['conds'])) {
+                //Add the data to the object in the session array
+                $_SESSION['order']->setCondiments($_POST['conds']);
 
-            //Redirect to summary page
-            $this->_f3->reroute('summary');
+                //Redirect to summary page
+                $this->_f3->reroute('summary');
+            }
         }
 
         $this->_f3->set('conds', $conds);
@@ -101,11 +103,30 @@ class Controller
      */
     public function summary()
     {
+        //Write order to database
+        $GLOBALS['db']->writeOrder($_SESSION['order']);
+
         //echo '<h1>Thank you for your order!</h1>';
 
         $view = new Template();
         echo $view->render('views/summary.html');
 
         session_destroy();
+    }
+
+    public function display()
+    {
+        //echo "<p>Display method</p>";
+        $result = $GLOBALS['db']->getOrders();
+
+        //Create a view that displays *all* of the
+        //results, e.g. id, food, meal, condiments, date
+        //as a table
+        foreach($result as $row) {
+            echo $row['order_id']." - ".$row['food']."<br>";
+        }
+        //var_dump($result);
+
+
     }
 }
